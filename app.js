@@ -465,6 +465,25 @@ function renderGamesPanel(layout) {
 window.addEventListener("hashchange", route);
 window.addEventListener("DOMContentLoaded", route);
 
+window.addEventListener("DOMContentLoaded", () => {
+    const footer = document.querySelector(".site-footer.scroll-reveal-footer");
+    if (!footer) {
+        return;
+    }
+
+    const revealOffset = 8;
+
+    const updateFooterVisibility = () => {
+        const currentY = window.scrollY;
+        const shouldShow = currentY > revealOffset;
+
+        footer.classList.toggle("is-visible", shouldShow);
+    };
+
+    updateFooterVisibility();
+    window.addEventListener("scroll", updateFooterVisibility, { passive: true });
+});
+
 document.getElementById("menuToggle").addEventListener("click", () => {
     location.hash = "/";
 });
