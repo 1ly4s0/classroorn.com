@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Classroorn | Aula virtual con juegos HTML5</title>
+    <meta name="description"
+        content="Classroorn es una interfaz tipo Classroom con clases, stream, tareas y un centro Arcade para jugar HTML5 dentro del mismo sitio." />
+    <meta name="keywords"
+        content="classroom, classroorn, aula virtual, juegos html5, eaglercraft, snow rider 3d, educación" />
+    <meta name="author" content="Tecno Bros" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f1f3f4" />
+    <link rel="canonical" href="https://classroorn.com/" />
+
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Classroorn" />
+    <meta property="og:title" content="Classroorn | Aula virtual con juegos HTML5" />
+    <meta property="og:description"
+        content="Clon de UI Classroom con clases, stream y un centro arcade integrado para juegos de navegador." />
+    <meta property="og:url" content="https://classroorn.com/" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Classroorn | Aula virtual con juegos HTML5" />
+    <meta name="twitter:description"
+        content="Interfaz educativa tipo Classroom con acceso a juegos HTML5 y navegación por clases." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Classroorn",
+            "url": "https://classroorn.com/",
+            "description": "Aula virtual estilo Classroom con centro arcade HTML5 integrado.",
+            "publisher": {
+                "@type": "Organization",
+                "name": "Tecno Bros",
+                "url": "https://tecnobros.es/"
+            }
+        }
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FHVEFRMKXF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-FHVEFRMKXF');
+    </script>
+</head>
+
+<body>
+    <div id="app" class="app-shell">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" aria-label="Menú" id="menuToggle">☰</button>
+                <h1 class="brand">Classroorn</h1>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Crear">＋</button>
+                <button class="icon-btn" title="Apps">⋮⋮</button>
+                <button class="avatar-btn" title="Perfil">A</button>
+            </div>
+        </header>
+
+        <main id="view" class="view"></main>
+
+        <footer class="site-footer">
+            <p>© 2026 Classroorn · Proyecto desarrollado por <a href="https://tecnobros.es/" target="_blank"
+                    rel="noreferrer">Tecno Bros</a></p>
+            <nav class="footer-links" aria-label="Enlaces legales">
+                <a href="politica-privacidad.html">Política y Privacidad</a>
+                <a href="quienes-somos.html">Quiénes somos</a>
+            </nav>
+        </footer>
+    </div>
+
+    <template id="dashboard-template">
+        <section class="dashboard-wrap">
+            <div class="dashboard-grid" id="classGrid"></div>
+        </section>
+    </template>
+
+    <template id="class-template">
+        <section class="class-wrap" id="classViewRoot">
+            <nav class="class-tabs">
+                <button class="tab-btn active" data-tab="stream">Novedades</button>
+                <button class="tab-btn" data-tab="classwork">Trabajo</button>
+                <button class="tab-btn" data-tab="people">Personas</button>
+                <button class="tab-btn" data-tab="games">Arcade</button>
+            </nav>
+
+            <section class="class-hero" id="classHero"></section>
+
+            <div class="class-layout" id="classLayout"></div>
+        </section>
+    </template>
+
+    <template id="stream-panel-template">
+        <aside class="upcoming-card">
+            <h3>Próximas tareas</h3>
+            <p><strong>Mañana</strong></p>
+            <ul id="upcomingList"></ul>
+        </aside>
+        <section class="feed" id="feedList"></section>
+    </template>
+
+    <template id="classwork-panel-template">
+        <section class="board-list" id="classworkList"></section>
+    </template>
+
+    <template id="people-panel-template">
+        <section class="people-list" id="peopleList"></section>
+    </template>
+
+    <template id="games-panel-template">
+        <section class="games-hub">
+            <div id="gamesListView" class="games-list-view">
+                <h3>Centro Arcade</h3>
+                <p class="muted">Todos los juegos visibles aquí. Elige uno para abrirlo grande en el centro.</p>
+                <input id="gameSearch" type="search" placeholder="Buscar juego..." />
+                <form id="customGameForm" class="custom-game-form">
+                    <input id="customGameName" type="text" placeholder="Nombre del juego" required />
+                    <input id="customGameUrl" type="url" placeholder="https://..." required />
+                    <input id="customGameCategory" type="text" placeholder="Categoría (opcional)" />
+                    <button type="submit">Agregar juego</button>
+                </form>
+                <div class="chips" id="categoryChips"></div>
+                <div class="game-grid" id="gameList"></div>
+            </div>
+
+            <div id="gamesPlayerView" class="games-player-view hidden">
+                <div class="player-header">
+                    <button id="backToGames" class="back-btn" type="button">← Volver a juegos</button>
+                    <h4 id="selectedGameTitle">Selecciona un juego</h4>
+                    <a id="openExternal" class="open-link" target="_blank" rel="noreferrer">Abrir en pestaña</a>
+                </div>
+                <div class="player-shell large" id="playerShell">
+                    <p class="muted">El juego se abrirá aquí si el sitio permite iframe. Si no, usa “Abrir en pestaña”.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
